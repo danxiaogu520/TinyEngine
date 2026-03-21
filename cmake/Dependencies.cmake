@@ -1,23 +1,14 @@
 include(FetchContent)
 
-if(TINYENGINE_USE_SDL2 AND TINYENGINE_USE_GLFW)
-    message(FATAL_ERROR "Select only one backend: SDL2 or GLFW.")
-endif()
+set(SDL_SHARED OFF CACHE BOOL "Build shared SDL library" FORCE)
+set(SDL_STATIC ON CACHE BOOL "Build static SDL library" FORCE)
+set(SDL_TEST_LIBRARY OFF CACHE BOOL "Build SDL test library" FORCE)
+set(SDL_TESTS OFF CACHE BOOL "Build SDL tests" FORCE)
 
-if(TINYENGINE_USE_SDL2)
-    FetchContent_Declare(
-        SDL2
-        GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-        GIT_TAG release-2.30.10
-    )
-    FetchContent_MakeAvailable(SDL2)
-endif()
+FetchContent_Declare(
+    SDL2
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+    GIT_TAG release-2.30.10
+)
 
-if(TINYENGINE_USE_GLFW)
-    FetchContent_Declare(
-        glfw
-        GIT_REPOSITORY https://github.com/glfw/glfw.git
-        GIT_TAG 3.4
-    )
-    FetchContent_MakeAvailable(glfw)
-endif()
+FetchContent_MakeAvailable(SDL2)
