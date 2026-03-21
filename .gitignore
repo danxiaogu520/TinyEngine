@@ -37,5 +37,18 @@
 *.out
 *.app
 
-# debug information files
+# Debug information files
 *.dwo
+
+# IDEs
+.idea/
+.vscode/
+
+# Build directories
+cmake-build-*/
+build/
+out/
+bin/
+
+# Local planning docs
+plan.md
