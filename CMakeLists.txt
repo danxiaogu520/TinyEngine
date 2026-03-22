@@ -13,6 +13,8 @@ add_executable(TinyEngine
 	src/Core/Timer.cpp
 	src/Core/Window.cpp
 	src/Math/Vector2.cpp
+	src/Math/Vector3.cpp
+	src/Math/Vector4.cpp
 )
 
 target_include_directories(TinyEngine
