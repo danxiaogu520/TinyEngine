@@ -20,6 +20,11 @@ TinyEngine is a lightweight 2D game engine/framework learning project.
 - Added GameLoop with init/event/update/shutdown callbacks
 - Main entry now uses GameLoop callbacks
 
+## Day4 Started (Collaborative)
+
+- Added Vector2 API and source file skeleton
+- Left core math logic as TODO(user): +, -, *, /, Dot, Cross, Normalize
+
 ## Configure
 
 ```bash

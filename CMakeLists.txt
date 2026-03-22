@@ -12,6 +12,7 @@ add_executable(TinyEngine
 	src/Core/GameLoop.cpp
 	src/Core/Timer.cpp
 	src/Core/Window.cpp
+	src/Math/Vector2.cpp
 )
 
 target_include_directories(TinyEngine
