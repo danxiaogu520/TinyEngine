@@ -9,6 +9,8 @@ option(TINYENGINE_FETCH_DEPS "Download third-party dependencies via FetchContent
 
 add_executable(TinyEngine
 	main.cpp
+	src/Core/GameLoop.cpp
+	src/Core/Timer.cpp
 	src/Core/Window.cpp
 )
 

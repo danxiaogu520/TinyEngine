@@ -14,6 +14,12 @@ TinyEngine is a lightweight 2D game engine/framework learning project.
 - Basic event dispatch implemented (Quit and WindowResized)
 - Entry point switched to a minimal window/event loop demo
 
+## Day3 Progress
+
+- Added Timer with delta time and elapsed time
+- Added GameLoop with init/event/update/shutdown callbacks
+- Main entry now uses GameLoop callbacks
+
 ## Configure
 
 ```bash
