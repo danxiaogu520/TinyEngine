@@ -4,39 +4,37 @@
 #include "TinyEngine/Core/Window.h"
 
 namespace TinyEngine::Core {
+	bool GameLoop::Run(Window& window, const GameLoopCallbacks& callbacks) {
+		if (!window.Initialize()) {
+			return false;
+		}
 
-bool GameLoop::Run(Window& window, const GameLoopCallbacks& callbacks) {
-    if (!window.Initialize()) {
-        return false;
-    }
+		if (callbacks.onInit) {
+			callbacks.onInit();
+		}
 
-    if (callbacks.onInit) {
-        callbacks.onInit();
-    }
+		Timer timer;
+		timer.Reset();
 
-    Timer timer;
-    timer.Reset();
+		while (!window.ShouldClose()) {
+			timer.Tick();
 
-    while (!window.ShouldClose()) {
-        timer.Tick();
+			Event event;
+			while (window.PollEvent(event)) {
+				if (callbacks.onEvent) {
+					callbacks.onEvent(event);
+				}
+			}
 
-        Event event;
-        while (window.PollEvent(event)) {
-            if (callbacks.onEvent) {
-                callbacks.onEvent(event);
-            }
-        }
+			if (callbacks.onUpdate) {
+				callbacks.onUpdate(timer.GetDeltaTimeSeconds());
+			}
+		}
 
-        if (callbacks.onUpdate) {
-            callbacks.onUpdate(timer.GetDeltaTimeSeconds());
-        }
-    }
+		if (callbacks.onShutdown) {
+			callbacks.onShutdown();
+		}
 
-    if (callbacks.onShutdown) {
-        callbacks.onShutdown();
-    }
-
-    return true;
-}
-
+		return true;
+	}
 } // namespace TinyEngine::Core
