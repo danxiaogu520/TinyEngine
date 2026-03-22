@@ -34,3 +34,15 @@ TinyEngine is a lightweight 2D game engine/framework learning project focused on
 3. Implemented 3D cross product for Vector3.
 4. Corrected Vector3 mathematical edge cases and formula details.
 5. Completed Vector4 implementation to remove duplicated manual placeholder work.
+
+### Day6 - Matrix4x4 module
+1. Added Matrix4x4 API and source files.
+2. Implemented translation matrix.
+3. Implemented scale matrix.
+4. Implemented orthographic projection matrix.
+5. Implemented matrix-matrix and matrix-vector multiplication.
+
+### Day6 - Matrix4x4 module (Collaborative)
+1. Added Matrix4x4 API and source skeleton.
+2. Connected Matrix4x4 source to CMake target.
+3. Left core math logic as TODO(user): Translation, Scale, Orthographic, matrix multiply.
