@@ -42,7 +42,7 @@ TinyEngine is a lightweight 2D game engine/framework learning project focused on
 4. Implemented orthographic projection matrix.
 5. Implemented matrix-matrix and matrix-vector multiplication.
 
-### Day6 - Matrix4x4 module (Collaborative)
-1. Added Matrix4x4 API and source skeleton.
-2. Connected Matrix4x4 source to CMake target.
-3. Left core math logic as TODO(user): Translation, Scale, Orthographic, matrix multiply.
+### Day7 - Logging and math tests
+1. Added lightweight Log module with Info, Warning, and Error levels.
+2. Added math test executable for Vector2, Vector3, Vector4, and Matrix4x4.
+3. Enabled CTest registration for TinyEngineMathTests.

@@ -10,6 +10,7 @@ option(TINYENGINE_FETCH_DEPS "Download third-party dependencies via FetchContent
 add_executable(TinyEngine
 	main.cpp
 	src/Core/GameLoop.cpp
+	src/Core/Log.cpp
 	src/Core/Timer.cpp
 	src/Core/Window.cpp
 	src/Math/Matrix4x4.cpp
@@ -45,3 +46,19 @@ elseif(TARGET SDL2::SDL2)
 else()
 	message(FATAL_ERROR "SDL2 target not found. Expected SDL2::SDL2-static or SDL2::SDL2")
 endif()
+
+add_executable(TinyEngineMathTests
+	tests/MathTests.cpp
+	src/Math/Matrix4x4.cpp
+	src/Math/Vector2.cpp
+	src/Math/Vector3.cpp
+	src/Math/Vector4.cpp
+)
+
+target_include_directories(TinyEngineMathTests
+	PRIVATE
+		${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+enable_testing()
+add_test(NAME TinyEngineMathTests COMMAND TinyEngineMathTests)
