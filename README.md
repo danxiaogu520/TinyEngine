@@ -54,3 +54,16 @@ TinyEngine is a lightweight 2D game engine/framework learning project focused on
 4. Connected rendering flow into game loop update path.
 5. Hooked window resize events to renderer viewport update.
 6. Added a visible moving box render demo.
+
+### Day9 - Shader loading foundation
+1. Added Shader class abstraction for render pipeline extension.
+2. Implemented shader source loading from files.
+3. Added source validation flow and clear error reporting.
+4. Kept bind/unbind as lightweight no-op in current SDL2 rendering stage.
+
+### Day9 - Shader abstraction
+1. Added Shader class abstraction with lifecycle management.
+2. Added shader source loading from file and in-memory strings.
+3. Added vertex and fragment shader compile flow.
+4. Added shader program link flow and detailed error messages.
+5. Added OpenGL backend toggle in CMake for staged integration.
