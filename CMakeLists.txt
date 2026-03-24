@@ -13,6 +13,7 @@ add_executable(TinyEngine
 	src/Core/Log.cpp
 	src/Core/Timer.cpp
 	src/Core/Window.cpp
+	src/Graphics/Renderer2D.cpp
 	src/Math/Matrix4x4.cpp
 	src/Math/Vector2.cpp
 	src/Math/Vector3.cpp

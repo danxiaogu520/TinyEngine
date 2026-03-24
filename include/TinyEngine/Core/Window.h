@@ -22,6 +22,7 @@ namespace TinyEngine::Core {
 		void Shutdown();
 
 		bool PollEvent(Event& outEvent);
+		[[nodiscard]] SDL_Window* GetNativeHandle() const;
 
 		[[nodiscard]] bool ShouldClose() const;
 		void RequestClose();

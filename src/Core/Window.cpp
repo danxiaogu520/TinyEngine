@@ -69,6 +69,10 @@ namespace TinyEngine::Core {
 		return true;
 	}
 
+	SDL_Window* Window::GetNativeHandle() const {
+		return m_nativeWindow;
+	}
+
 	bool Window::ShouldClose() const {
 		return m_shouldClose;
 	}

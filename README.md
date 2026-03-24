@@ -46,3 +46,11 @@ TinyEngine is a lightweight 2D game engine/framework learning project focused on
 1. Added lightweight Log module with Info, Warning, and Error levels.
 2. Added math test executable for Vector2, Vector3, Vector4, and Matrix4x4.
 3. Enabled CTest registration for TinyEngineMathTests.
+
+### Day8 - Rendering layer bootstrap
+1. Added Renderer2D wrapper based on SDL_Renderer.
+2. Implemented renderer lifecycle: initialize, begin frame clear, end frame present, shutdown.
+3. Added basic filled-rectangle draw API.
+4. Connected rendering flow into game loop update path.
+5. Hooked window resize events to renderer viewport update.
+6. Added a visible moving box render demo.
