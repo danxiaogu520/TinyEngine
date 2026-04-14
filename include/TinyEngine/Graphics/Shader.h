@@ -25,12 +25,13 @@ public:
 
     void Reset();
 
+    bool LinkFromCompiledStages(std::uint32_t vertexShaderId, std::uint32_t fragmentShaderId);
+
     [[nodiscard]] bool IsValid() const;
     [[nodiscard]] std::uint32_t GetProgramId() const;
     [[nodiscard]] const std::string& GetLastError() const;
 
 private:
-    bool m_isLoaded = false;
     std::uint32_t m_programId = 0;
     std::string m_lastError;
 };

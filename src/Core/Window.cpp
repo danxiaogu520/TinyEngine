@@ -1,5 +1,6 @@
 #include "TinyEngine/Core/Window.h"
 
+#include <cstdint>
 #include <SDL.h>
 
 namespace TinyEngine::Core {
@@ -18,13 +19,25 @@ namespace TinyEngine::Core {
 			return false;
 		}
 
+		std::uint32_t windowFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
+
+		if (m_spec.enableOpenGL) {
+			windowFlags |= SDL_WINDOW_OPENGL;
+			if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3) != 0 ||
+				SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3) != 0 ||
+				SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) != 0) {
+				SDL_Quit();
+				return false;
+			}
+		}
+
 		m_nativeWindow = SDL_CreateWindow(
 			m_spec.title.c_str(),
 			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED,
 			m_spec.width,
 			m_spec.height,
-			SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
+			windowFlags
 		);
 
 		if (m_nativeWindow == nullptr) {

@@ -2,7 +2,7 @@
 
 TinyEngine is a lightweight 2D game engine/framework learning project focused on proving core engine fundamentals: game loop, rendering pipeline groundwork, resource lifetime control, and ECS-oriented architecture thinking.
 
-## Progress Log (Day1 - Day5)
+## Progress Log (Day1 - Day11)
 
 ### Day1 - Project bootstrap and dependency strategy
 1. Built a clean CMake project entry with C++23 constraints.
@@ -55,15 +55,21 @@ TinyEngine is a lightweight 2D game engine/framework learning project focused on
 5. Hooked window resize events to renderer viewport update.
 6. Added a visible moving box render demo.
 
-### Day9 - Shader loading foundation
-1. Added Shader class abstraction for render pipeline extension.
-2. Implemented shader source loading from files.
-3. Added source validation flow and clear error reporting.
-4. Kept bind/unbind as lightweight no-op in current SDL2 rendering stage.
-
-### Day9 - Shader abstraction
+### Day9 - Shader pipeline foundation
 1. Added Shader class abstraction with lifecycle management.
-2. Added shader source loading from file and in-memory strings.
-3. Added vertex and fragment shader compile flow.
-4. Added shader program link flow and detailed error messages.
-5. Added OpenGL backend toggle in CMake for staged integration.
+2. Implemented vertex and fragment shader compile flow.
+3. Implemented program link flow with detailed compile/link error reporting.
+4. Added optional OpenGL backend switch in CMake.
+
+### Day10 - GPU buffer and smoke test integration
+1. Added GPU-capable VertexBuffer and IndexBuffer upload/bind lifecycle.
+2. Added VertexArray build path that wires vertex attributes and index binding.
+3. Integrated OpenGL smoke test path in app startup when OpenGL mode is enabled.
+4. Kept SDL2-only render demo path available for stable baseline iteration.
+
+### Day11 - ECS minimal core loop
+1. Added Entity ID model and Registry lifecycle (create/destroy/isAlive).
+2. Added generic component storage with add/remove/has/get operations.
+3. Added View query for multi-component entity iteration.
+4. Added base system interface and scheduler update loop.
+5. Added ECS tests covering registry behavior and a movement system update.
