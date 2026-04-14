@@ -2,7 +2,7 @@
 
 TinyEngine is a lightweight 2D game engine/framework learning project focused on proving core engine fundamentals: game loop, rendering pipeline groundwork, resource lifetime control, and ECS-oriented architecture thinking.
 
-## Progress Log (Day1 - Day15)
+## Progress Log (Day1 - Day16)
 
 ### Day1 - Project bootstrap and dependency strategy
 1. Built a clean CMake project entry with C++23 constraints.
@@ -95,3 +95,8 @@ TinyEngine is a lightweight 2D game engine/framework learning project focused on
 1. Added generic ResourceHandle based on weak references to support lightweight resource references.
 2. Added ResourceManager base API for typed register/get/resolve/unload operations.
 3. Added ResourceManager tests and integrated TinyEngineResourceTests into CTest.
+
+### Day16 - Texture cache pool
+1. Added load-or-get capability in ResourceManager to support cache-first loading behavior.
+2. Added TextureCache abstraction for path-based texture caching with duplicate-instantiation prevention.
+3. Extended resource tests to validate cache behavior and ensure repeated loads for the same key reuse a single instance.

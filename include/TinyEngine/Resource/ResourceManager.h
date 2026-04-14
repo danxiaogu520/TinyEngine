@@ -57,19 +57,37 @@ namespace TinyEngine::Resource {
 			return GetHandle<TResource>(key).Lock();
 		}
 
+		template <typename TResource, typename TFactory>
+		ResourceHandle<TResource> LoadOrGet(std::string key, TFactory&& factory) {
+			if (key.empty()) {
+				return {};
+			}
+
+			if (auto existing = GetHandle<TResource>(key); existing.IsValid()) {
+				return existing;
+			}
+
+			auto resource = std::forward<TFactory>(factory)();
+			if (resource == nullptr) {
+				return {};
+			}
+
+			return Register<TResource>(std::move(key), std::move(resource));
+		}
+
 		template <typename TResource>
 		[[nodiscard]] std::shared_ptr<TResource> Resolve(const ResourceHandle<TResource>& handle) const {
 			return handle.Lock();
 		}
 
 		template <typename TResource>
-		[[nodiscard]] bool Contains(std::string_view key) const {
+		[[nodiscard]] bool Contains(const std::string_view key) const {
 			const std::string typedKey = BuildTypedKey<TResource>(key);
 			return m_entriesByTypedKey.find(typedKey) != m_entriesByTypedKey.end();
 		}
 
 		template <typename TResource>
-		bool Unload(std::string_view key) {
+		bool Unload(const std::string_view key) {
 			const std::string typedKey = BuildTypedKey<TResource>(key);
 			return m_entriesByTypedKey.erase(typedKey) > 0;
 		}

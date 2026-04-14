@@ -61,6 +61,44 @@ namespace {
 
 		return 0;
 	}
+
+	int TestLoadOrGetPreventsDuplicateCreation() {
+		TinyEngine::Resource::ResourceManager manager;
+		int loadCount = 0;
+
+		auto firstHandle = manager.LoadOrGet<DummyResource>("dummy/cache", [&loadCount]() {
+			++loadCount;
+			auto resource = std::make_shared<DummyResource>();
+			resource->value = 99;
+			return resource;
+		});
+
+		auto secondHandle = manager.LoadOrGet<DummyResource>("dummy/cache", [&loadCount]() {
+			++loadCount;
+			auto resource = std::make_shared<DummyResource>();
+			resource->value = 100;
+			return resource;
+		});
+
+		if (!firstHandle.IsValid() || !secondHandle.IsValid()) {
+			return 1;
+		}
+
+		if (loadCount != 1) {
+			return 1;
+		}
+
+		if (firstHandle.Id() != secondHandle.Id()) {
+			return 1;
+		}
+
+		auto cached = manager.Get<DummyResource>("dummy/cache");
+		if (cached == nullptr || cached->value != 99) {
+			return 1;
+		}
+
+		return 0;
+	}
 } // namespace
 
 int main() {
@@ -71,6 +109,11 @@ int main() {
 
 	if (TestReplaceAndUnload() != 0) {
 		std::cerr << "Resource manager replace/unload test failed" << std::endl;
+		return 1;
+	}
+
+	if (TestLoadOrGetPreventsDuplicateCreation() != 0) {
+		std::cerr << "Resource manager load-or-get cache test failed" << std::endl;
 		return 1;
 	}
 
