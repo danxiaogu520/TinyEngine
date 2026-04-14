@@ -2,9 +2,7 @@
 
 #include <utility>
 
-#if defined(TINYENGINE_ENABLE_OPENGL)
 #include <glad/glad.h>
-#endif
 
 namespace TinyEngine::Graphics {
 	VertexBuffer::~VertexBuffer() {
@@ -54,7 +52,6 @@ namespace TinyEngine::Graphics {
 			return false;
 		}
 
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		if (m_bufferId == 0) {
 			glGenBuffers(1, &m_bufferId);
 		}
@@ -73,31 +70,22 @@ namespace TinyEngine::Graphics {
 
 		m_uploaded = true;
 		return true;
-#else
-		return false;
-#endif
 	}
 
 	void VertexBuffer::Bind() const {
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		if (m_bufferId != 0) {
 			glBindBuffer(GL_ARRAY_BUFFER, m_bufferId);
 		}
-#endif
 	}
 
 	void VertexBuffer::Unbind() const {
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-#endif
 	}
 
 	void VertexBuffer::Reset() {
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		if (m_bufferId != 0) {
 			glDeleteBuffers(1, &m_bufferId);
 		}
-#endif
 
 		m_data.clear();
 		m_strideBytes = 0;

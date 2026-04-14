@@ -11,7 +11,6 @@ namespace TinyEngine::Core {
 		std::string title = "TinyEngine";
 		int width = 1280;
 		int height = 720;
-		bool enableOpenGL = false;
 	};
 
 	class Window {

@@ -5,9 +5,7 @@
 
 #include <utility>
 
-#if defined(TINYENGINE_ENABLE_OPENGL)
 #include <glad/glad.h>
-#endif
 
 namespace TinyEngine::Graphics {
 	VertexArray::~VertexArray() {
@@ -54,7 +52,6 @@ namespace TinyEngine::Graphics {
 			return false;
 		}
 
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		if (!m_vertexBuffer->UploadToGpu()) {
 			return false;
 		}
@@ -100,31 +97,22 @@ namespace TinyEngine::Graphics {
 
 		m_built = true;
 		return true;
-#else
-		return false;
-#endif
 	}
 
 	void VertexArray::Bind() const {
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		if (m_arrayId != 0) {
 			glBindVertexArray(m_arrayId);
 		}
-#endif
 	}
 
 	void VertexArray::Unbind() const {
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		glBindVertexArray(0);
-#endif
 	}
 
 	void VertexArray::Reset() {
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		if (m_arrayId != 0) {
 			glDeleteVertexArrays(1, &m_arrayId);
 		}
-#endif
 
 		m_vertexBuffer.reset();
 		m_indexBuffer.reset();

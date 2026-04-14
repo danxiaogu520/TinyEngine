@@ -4,9 +4,7 @@
 #include <sstream>
 #include <utility>
 
-#if defined(TINYENGINE_ENABLE_OPENGL)
 #include <glad/glad.h>
-#endif
 
 namespace TinyEngine::Graphics {
 	namespace {
@@ -20,8 +18,6 @@ namespace TinyEngine::Graphics {
 			oss << inFile.rdbuf();
 			return oss.str();
 		}
-
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		bool CompileStage(std::uint32_t stageType, std::string_view source, std::uint32_t& outShaderId, std::string& outError) {
 			outShaderId = glCreateShader(stageType);
 			if (outShaderId == 0) {
@@ -50,7 +46,6 @@ namespace TinyEngine::Graphics {
 			outShaderId = 0;
 			return false;
 		}
-#endif
 	} // namespace
 
 	Shader::~Shader() {
@@ -104,8 +99,6 @@ namespace TinyEngine::Graphics {
 			m_lastError = "Fragment shader source is empty.";
 			return false;
 		}
-
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		std::uint32_t vertexShaderId = 0;
 		if (!CompileStage(GL_VERTEX_SHADER, vertexSource, vertexShaderId, m_lastError)) {
 			return false;
@@ -123,17 +116,11 @@ namespace TinyEngine::Graphics {
 		glDeleteShader(fragmentShaderId);
 
 		return linked;
-#else
-		m_lastError = "OpenGL backend is disabled. Enable TINYENGINE_ENABLE_OPENGL for real shader compilation.";
-		return false;
-#endif
 	}
 
 	bool Shader::LinkFromCompiledStages(std::uint32_t vertexShaderId, std::uint32_t fragmentShaderId) {
 		Reset();
 		m_lastError.clear();
-
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		m_programId = glCreateProgram();
 		if (m_programId == 0) {
 			m_lastError = "glCreateProgram failed.";
@@ -163,34 +150,22 @@ namespace TinyEngine::Graphics {
 		glDeleteProgram(m_programId);
 		m_programId = 0;
 		return false;
-#else
-		(void)vertexShaderId;
-		(void)fragmentShaderId;
-		m_lastError = "OpenGL backend is disabled.";
-		return false;
-#endif
 	}
 
 	void Shader::Bind() const {
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		if (m_programId != 0) {
 			glUseProgram(m_programId);
 		}
-#endif
 	}
 
 	void Shader::Unbind() const {
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		glUseProgram(0);
-#endif
 	}
 
 	void Shader::Reset() {
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		if (m_programId != 0) {
 			glDeleteProgram(m_programId);
 		}
-#endif
 		m_programId = 0;
 	}
 

@@ -7,7 +7,10 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-option(TINYENGINE_ENABLE_OPENGL "Enable OpenGL backend for shader and GPU buffer pipeline" ON)
+option(TINYENGINE_ENABLE_OPENGL "Enable OpenGL backend for TinyEngine" ON)
+if (NOT TINYENGINE_ENABLE_OPENGL)
+	message(FATAL_ERROR "TinyEngine now requires OpenGL. Keep TINYENGINE_ENABLE_OPENGL=ON.")
+endif()
 
 add_executable(TinyEngine
 	main.cpp
@@ -16,6 +19,7 @@ add_executable(TinyEngine
 	src/Core/Timer.cpp
 	src/Core/Window.cpp
 	src/Graphics/IndexBuffer.cpp
+	src/Graphics/OrthographicCamera.cpp
 	src/Graphics/Renderer2D.cpp
 	src/Graphics/Shader.cpp
 	src/Graphics/Texture2D.cpp
@@ -33,14 +37,11 @@ target_include_directories(TinyEngine
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Dependencies.cmake)
 target_include_directories(TinyEngine PRIVATE ${stb_SOURCE_DIR})
 target_link_libraries(TinyEngine PRIVATE SDL2::SDL2-static)
-
-if (TINYENGINE_ENABLE_OPENGL)
-	target_compile_definitions(TinyEngine PRIVATE TINYENGINE_ENABLE_OPENGL)
-	target_link_libraries(TinyEngine PRIVATE OpenGL::GL glad)
-endif()
+target_link_libraries(TinyEngine PRIVATE OpenGL::GL glad)
 
 add_executable(TinyEngineMathTests
 	tests/MathTests.cpp
+	src/Graphics/OrthographicCamera.cpp
 	src/Math/Matrix4x4.cpp
 	src/Math/Vector2.cpp
 	src/Math/Vector3.cpp

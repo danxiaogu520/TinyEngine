@@ -2,7 +2,7 @@
 
 TinyEngine is a lightweight 2D game engine/framework learning project focused on proving core engine fundamentals: game loop, rendering pipeline groundwork, resource lifetime control, and ECS-oriented architecture thinking.
 
-## Progress Log (Day1 - Day12)
+## Progress Log (Day1 - Day13)
 
 ### Day1 - Project bootstrap and dependency strategy
 1. Built a clean CMake project entry with C++23 constraints.
@@ -59,13 +59,13 @@ TinyEngine is a lightweight 2D game engine/framework learning project focused on
 1. Added Shader class abstraction with lifecycle management.
 2. Implemented vertex and fragment shader compile flow.
 3. Implemented program link flow with detailed compile/link error reporting.
-4. Added optional OpenGL backend switch in CMake.
+4. Unified runtime to OpenGL-first rendering pipeline.
 
 ### Day10 - GPU buffer and smoke test integration
 1. Added GPU-capable VertexBuffer and IndexBuffer upload/bind lifecycle.
 2. Added VertexArray build path that wires vertex attributes and index binding.
-3. Integrated OpenGL smoke test path in app startup when OpenGL mode is enabled.
-4. Kept SDL2-only render demo path available for stable baseline iteration.
+3. Integrated OpenGL smoke test path in app startup.
+4. Removed dual-backend branch logic to keep one rendering path.
 
 ### Day11 - ECS minimal core loop
 1. Added Entity ID model and Registry lifecycle (create/destroy/isAlive).
@@ -78,4 +78,9 @@ TinyEngine is a lightweight 2D game engine/framework learning project focused on
 1. Introduced stb_image dependency for image file decoding.
 2. Added Texture2D wrapper with image loading, metadata, and error reporting.
 3. Added OpenGL texture upload, bind/unbind, and resource lifecycle management.
-4. Kept behavior safe when OpenGL backend is disabled.
+4. Aligned texture path with always-on OpenGL runtime.
+
+### Day13 - Orthographic camera foundation
+1. Added OrthographicCamera abstraction with projection/view/view-projection matrices.
+2. Added camera position and Z-rotation controls with automatic matrix recomputation.
+3. Added Day13 camera tests into existing math test executable.

@@ -2,9 +2,7 @@
 
 #include <utility>
 
-#if defined(TINYENGINE_ENABLE_OPENGL)
 #include <glad/glad.h>
-#endif
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -94,7 +92,6 @@ namespace TinyEngine::Graphics {
 			return false;
 		}
 
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		if (m_textureId == 0) {
 			glGenTextures(1, &m_textureId);
 		}
@@ -125,35 +122,23 @@ namespace TinyEngine::Graphics {
 
 		m_uploaded = true;
 		return true;
-#else
-		m_lastError = "OpenGL backend is disabled.";
-		return false;
-#endif
 	}
 
 	void Texture2D::Bind(const std::uint32_t textureSlot) const {
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		if (m_textureId != 0) {
 			glActiveTexture(GL_TEXTURE0 + textureSlot);
 			glBindTexture(GL_TEXTURE_2D, m_textureId);
 		}
-#else
-		(void)textureSlot;
-#endif
 	}
 
 	void Texture2D::Unbind() const {
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		glBindTexture(GL_TEXTURE_2D, 0);
-#endif
 	}
 
 	void Texture2D::Reset() {
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		if (m_textureId != 0) {
 			glDeleteTextures(1, &m_textureId);
 		}
-#endif
 		m_pixels.clear();
 		m_width = 0;
 		m_height = 0;

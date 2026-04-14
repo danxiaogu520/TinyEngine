@@ -20,14 +20,12 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(SDL2)
 FetchContent_MakeAvailable(stb)
 
-if (TINYENGINE_ENABLE_OPENGL)
-    find_package(OpenGL REQUIRED)
+find_package(OpenGL REQUIRED)
 
-    FetchContent_Declare(
-        glad
-        GIT_REPOSITORY https://github.com/Dav1dde/glad.git
-        GIT_TAG v0.1.36
-    )
+FetchContent_Declare(
+    glad
+    GIT_REPOSITORY https://github.com/Dav1dde/glad.git
+    GIT_TAG v0.1.36
+)
 
-    FetchContent_MakeAvailable(glad)
-endif()
+FetchContent_MakeAvailable(glad)

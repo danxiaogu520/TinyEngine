@@ -2,9 +2,7 @@
 
 #include <utility>
 
-#if defined(TINYENGINE_ENABLE_OPENGL)
 #include <glad/glad.h>
-#endif
 
 namespace TinyEngine::Graphics {
 	IndexBuffer::~IndexBuffer() {
@@ -49,7 +47,6 @@ namespace TinyEngine::Graphics {
 			return false;
 		}
 
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		if (m_bufferId == 0) {
 			glGenBuffers(1, &m_bufferId);
 		}
@@ -68,31 +65,22 @@ namespace TinyEngine::Graphics {
 
 		m_uploaded = true;
 		return true;
-#else
-		return false;
-#endif
 	}
 
 	void IndexBuffer::Bind() const {
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		if (m_bufferId != 0) {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufferId);
 		}
-#endif
 	}
 
 	void IndexBuffer::Unbind() const {
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-#endif
 	}
 
 	void IndexBuffer::Reset() {
-#if defined(TINYENGINE_ENABLE_OPENGL)
 		if (m_bufferId != 0) {
 			glDeleteBuffers(1, &m_bufferId);
 		}
-#endif
 
 		m_indices.clear();
 		m_bufferId = 0;

@@ -1,6 +1,7 @@
 #include <cmath>
 #include <iostream>
 
+#include "TinyEngine/Graphics/OrthographicCamera.h"
 #include "TinyEngine/Math/Matrix4x4.h"
 #include "TinyEngine/Math/Vector2.h"
 #include "TinyEngine/Math/Vector3.h"
@@ -69,6 +70,28 @@ namespace {
 
 		return 0;
 	}
+
+	int TestOrthographicCamera() {
+		TinyEngine::Graphics::OrthographicCamera camera(-10.0f, 10.0f, -5.0f, 5.0f, -1.0f, 1.0f);
+
+		const TinyEngine::Math::Matrix4x4& projection = camera.GetProjectionMatrix();
+		if (!NearlyEqual(projection.At(0, 0), 0.1f)) return 1;
+		if (!NearlyEqual(projection.At(1, 1), 0.2f)) return 1;
+
+		camera.SetPosition(2.0f, 3.0f, 0.0f);
+		const TinyEngine::Math::Matrix4x4& view = camera.GetViewMatrix();
+		if (!NearlyEqual(view.At(0, 3), -2.0f)) return 1;
+		if (!NearlyEqual(view.At(1, 3), -3.0f)) return 1;
+
+		camera.SetRotationZRadians(3.1415926535f * 0.5f);
+		const TinyEngine::Math::Matrix4x4& rotatedView = camera.GetViewMatrix();
+		if (!NearlyEqual(rotatedView.At(0, 0), 0.0f)) return 1;
+
+		const TinyEngine::Math::Matrix4x4& vp = camera.GetViewProjectionMatrix();
+		if (!NearlyEqual(vp.At(3, 3), 1.0f)) return 1;
+
+		return 0;
+	}
 } // namespace
 
 int main() {
@@ -89,6 +112,11 @@ int main() {
 
 	if (TestMatrix4x4() != 0) {
 		std::cerr << "Matrix4x4 tests failed" << std::endl;
+		return 1;
+	}
+
+	if (TestOrthographicCamera() != 0) {
+		std::cerr << "OrthographicCamera tests failed" << std::endl;
 		return 1;
 	}
 
