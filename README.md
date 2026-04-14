@@ -2,7 +2,7 @@
 
 TinyEngine is a lightweight 2D game engine/framework learning project focused on proving core engine fundamentals: game loop, rendering pipeline groundwork, resource lifetime control, and ECS-oriented architecture thinking.
 
-## Progress Log (Day1 - Day16)
+## Progress Log (Day1 - Day17)
 
 ### Day1 - Project bootstrap and dependency strategy
 1. Built a clean CMake project entry with C++23 constraints.
@@ -100,3 +100,8 @@ TinyEngine is a lightweight 2D game engine/framework learning project focused on
 1. Added load-or-get capability in ResourceManager to support cache-first loading behavior.
 2. Added TextureCache abstraction for path-based texture caching with duplicate-instantiation prevention.
 3. Extended resource tests to validate cache behavior and ensure repeated loads for the same key reuse a single instance.
+
+### Day17 - Audio resource cache
+1. Added AudioClip resource type with WAV loading and audio metadata extraction based on SDL2.
+2. Added AudioCache abstraction for path-based audio loading and duplicate-instantiation prevention.
+3. Extended resource tests with generated WAV input to verify audio loading, cache reuse, and unload behavior.

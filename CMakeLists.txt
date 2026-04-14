@@ -24,6 +24,7 @@ add_executable(TinyEngine
 	src/Math/Vector2.cpp
 	src/Math/Vector3.cpp
 	src/Math/Vector4.cpp
+	src/Resource/AudioClip.cpp
 )
 target_include_directories(TinyEngine
 	PRIVATE
@@ -57,11 +58,13 @@ target_include_directories(TinyEngineECSTests
 
 add_executable(TinyEngineResourceTests
 	tests/ResourceTests.cpp
+	src/Resource/AudioClip.cpp
 )
 target_include_directories(TinyEngineResourceTests
 	PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+target_link_libraries(TinyEngineResourceTests PRIVATE SDL2::SDL2-static)
 
 enable_testing()
 add_test(NAME TinyEngineMathTests COMMAND TinyEngineMathTests)
