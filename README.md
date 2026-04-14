@@ -2,7 +2,7 @@
 
 TinyEngine is a lightweight 2D game engine/framework learning project focused on proving core engine fundamentals: game loop, rendering pipeline groundwork, resource lifetime control, and ECS-oriented architecture thinking.
 
-## Progress Log (Day1 - Day13)
+## Progress Log (Day1 - Day14)
 
 ### Day1 - Project bootstrap and dependency strategy
 1. Built a clean CMake project entry with C++23 constraints.
@@ -84,3 +84,9 @@ TinyEngine is a lightweight 2D game engine/framework learning project focused on
 1. Added OrthographicCamera abstraction with projection/view/view-projection matrices.
 2. Added camera position and Z-rotation controls with automatic matrix recomputation.
 3. Added Day13 camera tests into existing math test executable.
+
+### Day14 - Renderer2D API refactor
+1. Refactored Renderer2D to an OpenGL-backed pipeline and removed SDL_Renderer-specific rendering path.
+2. Added a simple textured quad API: DrawQuad(position, size, texture).
+3. Added automatic viewport/projection updates on window resize for screen-space rendering.
+4. Switched app entry rendering flow to Renderer2D and validated a moving quad demo path.

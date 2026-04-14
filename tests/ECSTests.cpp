@@ -16,7 +16,8 @@ namespace {
 	public:
 		void Update(TinyEngine::ECS::Registry& registry, const double deltaTimeSeconds) override {
 			const auto dt = static_cast<float>(deltaTimeSeconds);
-			for (const auto entities = registry.View<TinyEngine::ECS::TransformComponent, TinyEngine::ECS::VelocityComponent>(); const TinyEngine::ECS::Entity entity : entities) {
+			const auto entities = registry.View<TinyEngine::ECS::TransformComponent, TinyEngine::ECS::VelocityComponent>();
+			for (const TinyEngine::ECS::Entity entity : entities) {
 				auto& transform = registry.Get<TinyEngine::ECS::TransformComponent>(entity);
 				const auto& velocity = registry.Get<TinyEngine::ECS::VelocityComponent>(entity);
 				transform.x += velocity.vx * dt;

@@ -39,7 +39,7 @@ public:
     }
 
     [[nodiscard]] bool IsAlive(const Entity entity) const {
-        return m_aliveEntities.contains(entity);
+		return m_aliveEntities.find(entity) != m_aliveEntities.end();
     }
 
     template <typename Component, typename... Args>
@@ -121,7 +121,7 @@ private:
     public:
         template <typename... Args>
         Component& EmplaceOrReplace(const Entity entity, Args&&... args) {
-            if (m_componentByEntity.contains(entity)) {
+			if (m_componentByEntity.find(entity) != m_componentByEntity.end()) {
                 m_componentByEntity[entity] = Component{std::forward<Args>(args)...};
                 return m_componentByEntity[entity];
             }
@@ -134,7 +134,7 @@ private:
         }
 
         bool Remove(const Entity entity) override {
-            if (!m_componentByEntity.contains(entity)) {
+			if (m_componentByEntity.find(entity) == m_componentByEntity.end()) {
                 return false;
             }
 
@@ -150,7 +150,7 @@ private:
         }
 
         [[nodiscard]] bool Contains(const Entity entity) const {
-            return m_componentByEntity.contains(entity);
+			return m_componentByEntity.find(entity) != m_componentByEntity.end();
         }
 
         Component& Get(const Entity entity) {

@@ -1,5 +1,5 @@
+#include <cmath>
 #include <iostream>
-#include <memory>
 
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
@@ -9,10 +9,8 @@
 #include "TinyEngine/Core/GameLoop.h"
 #include "TinyEngine/Core/Log.h"
 #include "TinyEngine/Core/Window.h"
-#include "TinyEngine/Graphics/IndexBuffer.h"
-#include "TinyEngine/Graphics/Shader.h"
-#include "TinyEngine/Graphics/VertexArray.h"
-#include "TinyEngine/Graphics/VertexBuffer.h"
+#include "TinyEngine/Graphics/Renderer2D.h"
+#include "TinyEngine/Math/Vector2.h"
 
 int main() {
 	TinyEngine::Core::Window window({"胆小菇QAQ", 1280, 720});
@@ -20,10 +18,8 @@ int main() {
 
 	SDL_GLContext glContext = nullptr;
 	bool glReady = false;
-	TinyEngine::Graphics::Shader shader;
-	auto vertexBuffer = std::make_shared<TinyEngine::Graphics::VertexBuffer>();
-	auto indexBuffer = std::make_shared<TinyEngine::Graphics::IndexBuffer>();
-	TinyEngine::Graphics::VertexArray vertexArray;
+	TinyEngine::Graphics::Renderer2D renderer;
+	float elapsedSeconds = 0.0f;
 
 	TinyEngine::Core::GameLoopCallbacks callbacks;
 	callbacks.onInit = [&]() {
@@ -60,83 +56,36 @@ int main() {
 
 		SDL_GL_SetSwapInterval(1);
 
-		constexpr float vertices[] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.0f,  0.5f, 0.0f,
-		};
-		constexpr std::uint32_t indices[] = {0, 1, 2};
-
-		constexpr const char* vertexSource =
-			"#version 330 core\n"
-			"layout(location = 0) in vec3 aPos;\n"
-			"void main() {\n"
-			"  gl_Position = vec4(aPos, 1.0);\n"
-			"}\n";
-
-		constexpr const char* fragmentSource =
-			"#version 330 core\n"
-			"out vec4 FragColor;\n"
-			"void main() {\n"
-			"  FragColor = vec4(0.20, 0.82, 0.58, 1.0);\n"
-			"}\n";
-
-		if (!shader.LoadFromSource(vertexSource, fragmentSource)) {
-			TinyEngine::Core::Log::Error("Shader compile/link failed.");
+		if (!renderer.Initialize(window)) {
+			TinyEngine::Core::Log::Error("Renderer2D initialization failed.");
 			window.RequestClose();
 			return;
 		}
-
-		if (!vertexBuffer->SetData(vertices, sizeof(vertices) / sizeof(float), 3 * sizeof(float))) {
-			TinyEngine::Core::Log::Error("VertexBuffer SetData failed.");
-			window.RequestClose();
-			return;
-		}
-
-		if (!indexBuffer->SetData(indices, sizeof(indices) / sizeof(std::uint32_t))) {
-			TinyEngine::Core::Log::Error("IndexBuffer SetData failed.");
-			window.RequestClose();
-			return;
-		}
-
-		vertexArray.SetVertexBuffer(vertexBuffer);
-		vertexArray.SetIndexBuffer(indexBuffer);
-
-		if (!vertexArray.Build()) {
-			TinyEngine::Core::Log::Error("VertexArray Build failed.");
-			window.RequestClose();
-			return;
-		}
-
-		glViewport(0, 0, 1280, 720);
-		glClearColor(0.08f, 0.10f, 0.16f, 1.0f);
+		renderer.SetClearColor(0.08f, 0.10f, 0.16f, 1.0f);
 		glReady = true;
 	};
 	callbacks.onEvent = [&](const TinyEngine::Core::Event& event) {
 		if (event.type == TinyEngine::Core::EventType::WindowResized) {
 			std::cout << "Window resized to: " << event.width << "x" << event.height << std::endl;
 			if (glReady) {
-				glViewport(0, 0, event.width, event.height);
+				renderer.OnResize(event.width, event.height);
 			}
 		}
 	};
 	callbacks.onUpdate = [&](const double deltaTimeSeconds) {
-		(void)deltaTimeSeconds;
 		if (!glReady) {
 			return;
 		}
 
-		glClear(GL_COLOR_BUFFER_BIT);
-		shader.Bind();
-		vertexArray.Bind();
-		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(vertexArray.IndexCount()), GL_UNSIGNED_INT, nullptr);
-		vertexArray.Unbind();
-		shader.Unbind();
-		SDL_GL_SwapWindow(window.GetNativeHandle());
+		elapsedSeconds += static_cast<float>(deltaTimeSeconds);
+		const float offsetX = 220.0f + std::sin(elapsedSeconds) * 120.0f;
+
+		renderer.BeginFrame();
+		renderer.DrawQuad(TinyEngine::Math::Vector2(offsetX, 180.0f), TinyEngine::Math::Vector2(220.0f, 220.0f));
+		renderer.EndFrame();
 	};
 	callbacks.onShutdown = [&]() {
-		vertexArray.Reset();
-		shader.Reset();
+		renderer.Shutdown();
 		if (glContext != nullptr) {
 			SDL_GL_DeleteContext(glContext);
 			glContext = nullptr;
