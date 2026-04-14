@@ -1,16 +1,13 @@
-#include <cmath>
-#include <iostream>
-
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
 #include <glad/glad.h>
+#include <format>
 
 #include "TinyEngine/Core/Event.h"
 #include "TinyEngine/Core/GameLoop.h"
 #include "TinyEngine/Core/Log.h"
 #include "TinyEngine/Core/Window.h"
 #include "TinyEngine/Graphics/Renderer2D.h"
-#include "TinyEngine/Math/Vector2.h"
 
 int main() {
 	TinyEngine::Core::Window window({"胆小菇QAQ", 1280, 720});
@@ -19,7 +16,8 @@ int main() {
 	SDL_GLContext glContext = nullptr;
 	bool glReady = false;
 	TinyEngine::Graphics::Renderer2D renderer;
-	float elapsedSeconds = 0.0f;
+	int width = 1280;
+	int height = 720;
 
 	TinyEngine::Core::GameLoopCallbacks callbacks;
 	callbacks.onInit = [&]() {
@@ -66,7 +64,12 @@ int main() {
 	};
 	callbacks.onEvent = [&](const TinyEngine::Core::Event& event) {
 		if (event.type == TinyEngine::Core::EventType::WindowResized) {
-			std::cout << "Window resized to: " << event.width << "x" << event.height << std::endl;
+			if (width != event.width || height != event.height) {
+				TinyEngine::Core::Log::Info(std::format("Window resized to: {} x {}.", event.width, event.height));
+			}
+			width = event.width;
+			height = event.height;
+
 			if (glReady) {
 				renderer.OnResize(event.width, event.height);
 			}
@@ -76,12 +79,7 @@ int main() {
 		if (!glReady) {
 			return;
 		}
-
-		elapsedSeconds += static_cast<float>(deltaTimeSeconds);
-		const float offsetX = 220.0f + std::sin(elapsedSeconds) * 120.0f;
-
 		renderer.BeginFrame();
-		renderer.DrawQuad(TinyEngine::Math::Vector2(offsetX, 180.0f), TinyEngine::Math::Vector2(220.0f, 220.0f));
 		renderer.EndFrame();
 	};
 	callbacks.onShutdown = [&]() {
@@ -94,7 +92,7 @@ int main() {
 	};
 
 	if (!loop.Run(window, callbacks)) {
-		std::cerr << "Failed to start game loop." << std::endl;
+		TinyEngine::Core::Log::Error("Failed to start game loop.");
 		return 1;
 	}
 
