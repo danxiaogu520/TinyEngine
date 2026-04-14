@@ -18,6 +18,7 @@ add_executable(TinyEngine
 	src/Graphics/IndexBuffer.cpp
 	src/Graphics/Renderer2D.cpp
 	src/Graphics/Shader.cpp
+	src/Graphics/Texture2D.cpp
 	src/Graphics/VertexArray.cpp
 	src/Graphics/VertexBuffer.cpp
 	src/Math/Matrix4x4.cpp
@@ -30,6 +31,7 @@ target_include_directories(TinyEngine
 		${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Dependencies.cmake)
+target_include_directories(TinyEngine PRIVATE ${stb_SOURCE_DIR})
 target_link_libraries(TinyEngine PRIVATE SDL2::SDL2-static)
 
 if (TINYENGINE_ENABLE_OPENGL)

@@ -9,8 +9,8 @@
 namespace {
 	constexpr float kEpsilon = 1e-4f;
 
-	bool NearlyEqual(float lhs, float rhs, float epsilon = kEpsilon) {
-		return std::fabs(lhs - rhs) <= epsilon;
+	bool NearlyEqual(const float lhs, const float rhs) {
+		return std::fabs(lhs - rhs) <= kEpsilon;
 	}
 
 	int TestVector2() {

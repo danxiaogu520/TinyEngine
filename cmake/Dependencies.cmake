@@ -11,7 +11,14 @@ FetchContent_Declare(
     GIT_TAG release-2.30.10
 )
 
+FetchContent_Declare(
+    stb
+    GIT_REPOSITORY https://github.com/nothings/stb.git
+    GIT_TAG master
+)
+
 FetchContent_MakeAvailable(SDL2)
+FetchContent_MakeAvailable(stb)
 
 if (TINYENGINE_ENABLE_OPENGL)
     find_package(OpenGL REQUIRED)

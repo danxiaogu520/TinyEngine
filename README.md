@@ -2,7 +2,7 @@
 
 TinyEngine is a lightweight 2D game engine/framework learning project focused on proving core engine fundamentals: game loop, rendering pipeline groundwork, resource lifetime control, and ECS-oriented architecture thinking.
 
-## Progress Log (Day1 - Day11)
+## Progress Log (Day1 - Day12)
 
 ### Day1 - Project bootstrap and dependency strategy
 1. Built a clean CMake project entry with C++23 constraints.
@@ -73,3 +73,9 @@ TinyEngine is a lightweight 2D game engine/framework learning project focused on
 3. Added View query for multi-component entity iteration.
 4. Added base system interface and scheduler update loop.
 5. Added ECS tests covering registry behavior and a movement system update.
+
+### Day12 - Texture2D and image decoding
+1. Introduced stb_image dependency for image file decoding.
+2. Added Texture2D wrapper with image loading, metadata, and error reporting.
+3. Added OpenGL texture upload, bind/unbind, and resource lifecycle management.
+4. Kept behavior safe when OpenGL backend is disabled.

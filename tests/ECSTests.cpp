@@ -15,9 +15,8 @@ namespace {
 	class MovementSystem final : public TinyEngine::ECS::ISystem {
 	public:
 		void Update(TinyEngine::ECS::Registry& registry, const double deltaTimeSeconds) override {
-			const float dt = static_cast<float>(deltaTimeSeconds);
-			const auto entities = registry.View<TinyEngine::ECS::TransformComponent, TinyEngine::ECS::VelocityComponent>();
-			for (const TinyEngine::ECS::Entity entity : entities) {
+			const auto dt = static_cast<float>(deltaTimeSeconds);
+			for (const auto entities = registry.View<TinyEngine::ECS::TransformComponent, TinyEngine::ECS::VelocityComponent>(); const TinyEngine::ECS::Entity entity : entities) {
 				auto& transform = registry.Get<TinyEngine::ECS::TransformComponent>(entity);
 				const auto& velocity = registry.Get<TinyEngine::ECS::VelocityComponent>(entity);
 				transform.x += velocity.vx * dt;
@@ -67,11 +66,11 @@ namespace {
 
 		scheduler.Update(registry, 0.5);
 
-		const auto& moved = registry.Get<TinyEngine::ECS::TransformComponent>(e1);
-		const auto& untouched = registry.Get<TinyEngine::ECS::TransformComponent>(e2);
+		const auto& [x1, y1] = registry.Get<TinyEngine::ECS::TransformComponent>(e1);
+		const auto& [x2, y2] = registry.Get<TinyEngine::ECS::TransformComponent>(e2);
 
-		if (!NearlyEqual(moved.x, 1.0f) || !NearlyEqual(moved.y, 1.5f)) return 1;
-		if (!NearlyEqual(untouched.x, 5.0f) || !NearlyEqual(untouched.y, 5.0f)) return 1;
+		if (!NearlyEqual(x1, 1.0f) || !NearlyEqual(y1, 1.5f)) return 1;
+		if (!NearlyEqual(x2, 5.0f) || !NearlyEqual(y2, 5.0f)) return 1;
 
 		return 0;
 	}
