@@ -55,6 +55,15 @@ target_include_directories(TinyEngineECSTests
 		${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+add_executable(TinyEngineResourceTests
+	tests/ResourceTests.cpp
+)
+target_include_directories(TinyEngineResourceTests
+	PRIVATE
+		${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
 enable_testing()
 add_test(NAME TinyEngineMathTests COMMAND TinyEngineMathTests)
 add_test(NAME TinyEngineECSTests COMMAND TinyEngineECSTests)
+add_test(NAME TinyEngineResourceTests COMMAND TinyEngineResourceTests)
