@@ -115,44 +115,51 @@ namespace TinyEngine::ECS {
 		template <typename Component> class ComponentPool final : public IComponentPool {
 		public:
 			template <typename... Args> Component& EmplaceOrReplace(const Entity entity, Args&&... args) {
-				if (m_componentByEntity.find(entity) != m_componentByEntity.end()) {
-					m_componentByEntity[entity] = Component{std::forward<Args>(args)...};
-					return m_componentByEntity[entity];
+				auto it = m_sparseIndex.find(entity);
+				if (it != m_sparseIndex.end()) {
+					m_components[it->second] = Component{std::forward<Args>(args)...};
+					return m_components[it->second];
 				}
 
+				const std::size_t index = m_entities.size();
 				m_entities.push_back(entity);
-				m_entityIndex[entity] = m_entities.size() - 1;
-				auto [it, inserted] = m_componentByEntity.emplace(entity, Component{std::forward<Args>(args)...});
-				(void)inserted;
-				return it->second;
+				m_components.emplace_back(std::forward<Args>(args)...);
+				m_sparseIndex[entity] = index;
+				return m_components.back();
 			}
 
 			bool Remove(const Entity entity) override {
-				if (m_componentByEntity.find(entity) == m_componentByEntity.end()) {
+				auto it = m_sparseIndex.find(entity);
+				if (it == m_sparseIndex.end()) {
 					return false;
 				}
 
-				m_componentByEntity.erase(entity);
-
-				const std::size_t index = m_entityIndex.at(entity);
+				const std::size_t index = it->second;
+				const std::size_t lastIndex = m_entities.size() - 1;
 				const Entity lastEntity = m_entities.back();
-				m_entities[index] = lastEntity;
-				m_entityIndex[lastEntity] = index;
+
+				if (index != lastIndex) {
+					m_entities[index] = lastEntity;
+					m_components[index] = std::move(m_components.back());
+					m_sparseIndex[lastEntity] = index;
+				}
+
 				m_entities.pop_back();
-				m_entityIndex.erase(entity);
+				m_components.pop_back();
+				m_sparseIndex.erase(it);
 				return true;
 			}
 
 			[[nodiscard]] bool Contains(const Entity entity) const {
-				return m_componentByEntity.find(entity) != m_componentByEntity.end();
+				return m_sparseIndex.find(entity) != m_sparseIndex.end();
 			}
 
 			Component& Get(const Entity entity) {
-				return m_componentByEntity.at(entity);
+				return m_components.at(m_sparseIndex.at(entity));
 			}
 
 			const Component& Get(const Entity entity) const {
-				return m_componentByEntity.at(entity);
+				return m_components.at(m_sparseIndex.at(entity));
 			}
 
 			[[nodiscard]] const std::vector<Entity>& Entities() const {
@@ -160,9 +167,9 @@ namespace TinyEngine::ECS {
 			}
 
 		private:
-			std::unordered_map<Entity, Component> m_componentByEntity;
-			std::unordered_map<Entity, std::size_t> m_entityIndex;
 			std::vector<Entity> m_entities;
+			std::vector<Component> m_components;
+			std::unordered_map<Entity, std::size_t> m_sparseIndex;
 		};
 
 		void EnsureAlive(const Entity entity) const {

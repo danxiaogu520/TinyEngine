@@ -75,6 +75,38 @@ namespace {
 
 		return 0;
 	}
+
+	int TestSparseSetStyleStorageBehavior() {
+		TinyEngine::ECS::Registry registry;
+
+		const TinyEngine::ECS::Entity e1 = registry.CreateEntity();
+		const TinyEngine::ECS::Entity e2 = registry.CreateEntity();
+		const TinyEngine::ECS::Entity e3 = registry.CreateEntity();
+
+		registry.Emplace<TinyEngine::ECS::VelocityComponent>(e1, 1.0f, 2.0f);
+		registry.Emplace<TinyEngine::ECS::VelocityComponent>(e2, 3.0f, 4.0f);
+		registry.Emplace<TinyEngine::ECS::VelocityComponent>(e3, 5.0f, 6.0f);
+
+		registry.Emplace<TinyEngine::ECS::VelocityComponent>(e2, 30.0f, 40.0f);
+		const auto& replaced = registry.Get<TinyEngine::ECS::VelocityComponent>(e2);
+		if (!NearlyEqual(replaced.vx, 30.0f) || !NearlyEqual(replaced.vy, 40.0f)) return 1;
+
+		if (!registry.Remove<TinyEngine::ECS::VelocityComponent>(e2)) return 1;
+		if (registry.Has<TinyEngine::ECS::VelocityComponent>(e2)) return 1;
+
+		const auto entities = registry.View<TinyEngine::ECS::VelocityComponent>();
+		if (entities.size() != 2) return 1;
+		if (!(entities[0] == e1 || entities[0] == e3)) return 1;
+		if (!(entities[1] == e1 || entities[1] == e3)) return 1;
+		if (entities[0] == entities[1]) return 1;
+
+		const auto& e1Velocity = registry.Get<TinyEngine::ECS::VelocityComponent>(e1);
+		const auto& e3Velocity = registry.Get<TinyEngine::ECS::VelocityComponent>(e3);
+		if (!NearlyEqual(e1Velocity.vx, 1.0f) || !NearlyEqual(e1Velocity.vy, 2.0f)) return 1;
+		if (!NearlyEqual(e3Velocity.vx, 5.0f) || !NearlyEqual(e3Velocity.vy, 6.0f)) return 1;
+
+		return 0;
+	}
 } // namespace
 
 int main() {
@@ -85,6 +117,11 @@ int main() {
 
 	if (TestViewAndSystemUpdate() != 0) {
 		std::cerr << "ECS view/system tests failed" << std::endl;
+		return 1;
+	}
+
+	if (TestSparseSetStyleStorageBehavior() != 0) {
+		std::cerr << "ECS sparse set behavior tests failed" << std::endl;
 		return 1;
 	}
 
