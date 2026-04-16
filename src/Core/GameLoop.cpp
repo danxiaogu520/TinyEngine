@@ -1,5 +1,6 @@
 #include "TinyEngine/Core/GameLoop.h"
 
+#include "TinyEngine/Core/Input.h"
 #include "TinyEngine/Core/Timer.h"
 #include "TinyEngine/Core/Window.h"
 
@@ -13,6 +14,8 @@ namespace TinyEngine::Core {
 			callbacks.onInit();
 		}
 
+		Input::Instance().Reset();
+
 		Timer timer;
 		timer.Reset();
 
@@ -21,6 +24,7 @@ namespace TinyEngine::Core {
 
 			Event event;
 			while (window.PollEvent(event)) {
+				Input::Instance().ProcessEvent(event);
 				if (callbacks.onEvent) {
 					callbacks.onEvent(event);
 				}

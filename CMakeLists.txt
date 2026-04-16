@@ -10,6 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_executable(TinyEngine
 	main.cpp
 	src/Core/GameLoop.cpp
+	src/Core/Input.cpp
 	src/Core/Log.cpp
 	src/Core/Timer.cpp
 	src/Core/Window.cpp

@@ -5,6 +5,7 @@
 
 #include "TinyEngine/Core/Event.h"
 #include "TinyEngine/Core/GameLoop.h"
+#include "TinyEngine/Core/Input.h"
 #include "TinyEngine/Core/Log.h"
 #include "TinyEngine/Core/Window.h"
 #include "TinyEngine/Graphics/Renderer2D.h"
@@ -22,6 +23,13 @@ int main() {
 	TinyEngine::Core::GameLoopCallbacks callbacks;
 	callbacks.onInit = [&]() {
 		TinyEngine::Core::Log::Info("Game loop started.");
+		TinyEngine::Core::Input::Instance().SetKeyDownCallback([&](const int keyCode) {
+			if (keyCode == SDLK_ESCAPE) {
+				TinyEngine::Core::Log::Info("Escape pressed. Requesting close.");
+				window.RequestClose();
+			}
+		});
+
 		SDL_Window* nativeWindow = window.GetNativeHandle();
 		if (nativeWindow == nullptr) {
 			TinyEngine::Core::Log::Error("Native SDL window is null.");
@@ -76,6 +84,12 @@ int main() {
 		}
 	};
 	callbacks.onUpdate = [&](const double deltaTimeSeconds) {
+		(void)deltaTimeSeconds;
+
+		if (TinyEngine::Core::Input::Instance().IsKeyDown(SDLK_ESCAPE)) {
+			window.RequestClose();
+		}
+
 		if (!glReady) {
 			return;
 		}

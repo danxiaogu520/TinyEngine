@@ -75,6 +75,52 @@ namespace TinyEngine::Core {
 			return true;
 		}
 
+		if (sdlEvent.type == SDL_KEYDOWN) {
+			outEvent.type = EventType::KeyDown;
+			outEvent.keyCode = sdlEvent.key.keysym.sym;
+			outEvent.isRepeat = sdlEvent.key.repeat != 0;
+			return true;
+		}
+
+		if (sdlEvent.type == SDL_KEYUP) {
+			outEvent.type = EventType::KeyUp;
+			outEvent.keyCode = sdlEvent.key.keysym.sym;
+			outEvent.isRepeat = false;
+			return true;
+		}
+
+		if (sdlEvent.type == SDL_MOUSEBUTTONDOWN) {
+			outEvent.type = EventType::MouseButtonDown;
+			outEvent.mouseButton = sdlEvent.button.button;
+			outEvent.mouseX = sdlEvent.button.x;
+			outEvent.mouseY = sdlEvent.button.y;
+			return true;
+		}
+
+		if (sdlEvent.type == SDL_MOUSEBUTTONUP) {
+			outEvent.type = EventType::MouseButtonUp;
+			outEvent.mouseButton = sdlEvent.button.button;
+			outEvent.mouseX = sdlEvent.button.x;
+			outEvent.mouseY = sdlEvent.button.y;
+			return true;
+		}
+
+		if (sdlEvent.type == SDL_MOUSEMOTION) {
+			outEvent.type = EventType::MouseMoved;
+			outEvent.mouseX = sdlEvent.motion.x;
+			outEvent.mouseY = sdlEvent.motion.y;
+			outEvent.mouseDeltaX = sdlEvent.motion.xrel;
+			outEvent.mouseDeltaY = sdlEvent.motion.yrel;
+			return true;
+		}
+
+		if (sdlEvent.type == SDL_MOUSEWHEEL) {
+			outEvent.type = EventType::MouseWheel;
+			outEvent.wheelX = sdlEvent.wheel.x;
+			outEvent.wheelY = sdlEvent.wheel.y;
+			return true;
+		}
+
 		outEvent.type = EventType::None;
 		return true;
 	}
