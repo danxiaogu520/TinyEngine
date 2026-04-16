@@ -44,4 +44,15 @@ namespace TinyEngine::ECS {
 		float colorA = 1.0f;
 		bool visible = true;
 	};
+
+	struct PlayerControllerComponent final : Component<PlayerControllerComponent> {
+		PlayerControllerComponent() = default;
+
+		float moveSpeed = 200.0f;
+		int keyMoveUp = 'w';
+		int keyMoveDown = 's';
+		int keyMoveLeft = 'a';
+		int keyMoveRight = 'd';
+		bool enabled = true;
+	};
 } // namespace TinyEngine::ECS

@@ -233,6 +233,39 @@ namespace {
 
 		return 0;
 	}
+
+	int TestDay24PlayerControllerSystem() {
+		TinyEngine::ECS::Registry registry;
+
+		const TinyEngine::ECS::Entity player = registry.CreateEntity();
+		const TinyEngine::ECS::Entity other = registry.CreateEntity();
+
+		registry.Emplace<TinyEngine::ECS::TransformComponent>(player, 0.0f, 0.0f);
+		auto& controller = registry.Emplace<TinyEngine::ECS::PlayerControllerComponent>(player);
+		controller.moveSpeed = 10.0f;
+		controller.keyMoveRight = 'd';
+
+		registry.Emplace<TinyEngine::ECS::TransformComponent>(other, 3.0f, 4.0f);
+
+		bool rightPressed = true;
+		TinyEngine::ECS::SystemScheduler scheduler;
+		scheduler.AddSystem<TinyEngine::ECS::PlayerControllerSystem>([&](const int keyCode) {
+			return rightPressed && keyCode == 'd';
+		});
+
+		scheduler.Update(registry, 0.5);
+
+		const auto& playerTransform = registry.Get<TinyEngine::ECS::TransformComponent>(player);
+		const auto& otherTransform = registry.Get<TinyEngine::ECS::TransformComponent>(other);
+		if (!NearlyEqual(playerTransform.x, 5.0f) || !NearlyEqual(playerTransform.y, 0.0f)) return 1;
+		if (!NearlyEqual(otherTransform.x, 3.0f) || !NearlyEqual(otherTransform.y, 4.0f)) return 1;
+
+		rightPressed = false;
+		scheduler.Update(registry, 1.0);
+		if (!NearlyEqual(playerTransform.x, 5.0f) || !NearlyEqual(playerTransform.y, 0.0f)) return 1;
+
+		return 0;
+	}
 } // namespace
 
 int main() {
@@ -263,6 +296,11 @@ int main() {
 
 	if (TestDay22ECSRendererResourceIntegration() != 0) {
 		std::cerr << "ECS day22 integration tests failed" << std::endl;
+		return 1;
+	}
+
+	if (TestDay24PlayerControllerSystem() != 0) {
+		std::cerr << "ECS day24 player controller tests failed" << std::endl;
 		return 1;
 	}
 
