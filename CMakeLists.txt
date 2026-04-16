@@ -67,7 +67,16 @@ target_include_directories(TinyEngineResourceTests
 )
 target_link_libraries(TinyEngineResourceTests PRIVATE SDL2::SDL2-static)
 
+add_executable(TinyEngineSceneTests
+	tests/SceneTests.cpp
+)
+target_include_directories(TinyEngineSceneTests
+	PRIVATE
+		${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
 enable_testing()
 add_test(NAME TinyEngineMathTests COMMAND TinyEngineMathTests)
 add_test(NAME TinyEngineECSTests COMMAND TinyEngineECSTests)
 add_test(NAME TinyEngineResourceTests COMMAND TinyEngineResourceTests)
+add_test(NAME TinyEngineSceneTests COMMAND TinyEngineSceneTests)
