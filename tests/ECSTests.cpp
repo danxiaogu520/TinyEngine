@@ -129,6 +129,51 @@ namespace {
 
 		return 0;
 	}
+
+	int TestDay21RenderSystemSubmission() {
+		TinyEngine::ECS::Registry registry;
+
+		const TinyEngine::ECS::Entity drawableA = registry.CreateEntity();
+		const TinyEngine::ECS::Entity drawableB = registry.CreateEntity();
+		const TinyEngine::ECS::Entity hidden = registry.CreateEntity();
+		const TinyEngine::ECS::Entity noSprite = registry.CreateEntity();
+
+		registry.Emplace<TinyEngine::ECS::TransformComponent>(drawableA, 10.0f, 20.0f);
+		registry.Emplace<TinyEngine::ECS::SpriteRendererComponent>(drawableA);
+
+		registry.Emplace<TinyEngine::ECS::TransformComponent>(drawableB, 30.0f, 40.0f);
+		registry.Emplace<TinyEngine::ECS::SpriteRendererComponent>(drawableB);
+
+		registry.Emplace<TinyEngine::ECS::TransformComponent>(hidden, 50.0f, 60.0f);
+		auto& hiddenSprite = registry.Emplace<TinyEngine::ECS::SpriteRendererComponent>(hidden);
+		hiddenSprite.visible = false;
+
+		registry.Emplace<TinyEngine::ECS::TransformComponent>(noSprite, 70.0f, 80.0f);
+
+		int submitCount = 0;
+		float submittedXSum = 0.0f;
+		float submittedYSum = 0.0f;
+
+		TinyEngine::ECS::SystemScheduler scheduler;
+		scheduler.AddSystem<TinyEngine::ECS::RenderSystem>(
+			[&](const TinyEngine::ECS::Entity entity, const TinyEngine::ECS::TransformComponent& transform,
+				const TinyEngine::ECS::SpriteRendererComponent& sprite) {
+				if (!sprite.visible) return;
+				if (entity != drawableA && entity != drawableB) return;
+
+				submitCount += 1;
+				submittedXSum += transform.x;
+				submittedYSum += transform.y;
+			});
+
+		scheduler.Update(registry, 0.016);
+
+		if (submitCount != 2) return 1;
+		if (!NearlyEqual(submittedXSum, 40.0f)) return 1;
+		if (!NearlyEqual(submittedYSum, 60.0f)) return 1;
+
+		return 0;
+	}
 } // namespace
 
 int main() {
@@ -149,6 +194,11 @@ int main() {
 
 	if (TestDay20CoreComponents() != 0) {
 		std::cerr << "ECS day20 core component tests failed" << std::endl;
+		return 1;
+	}
+
+	if (TestDay21RenderSystemSubmission() != 0) {
+		std::cerr << "ECS day21 render system tests failed" << std::endl;
 		return 1;
 	}
 
