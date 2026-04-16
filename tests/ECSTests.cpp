@@ -67,11 +67,11 @@ namespace {
 
 		scheduler.Update(registry, 0.5);
 
-		const auto& [x1, y1] = registry.Get<TinyEngine::ECS::TransformComponent>(e1);
-		const auto& [x2, y2] = registry.Get<TinyEngine::ECS::TransformComponent>(e2);
+		const auto& t1 = registry.Get<TinyEngine::ECS::TransformComponent>(e1);
+		const auto& t2 = registry.Get<TinyEngine::ECS::TransformComponent>(e2);
 
-		if (!NearlyEqual(x1, 1.0f) || !NearlyEqual(y1, 1.5f)) return 1;
-		if (!NearlyEqual(x2, 5.0f) || !NearlyEqual(y2, 5.0f)) return 1;
+		if (!NearlyEqual(t1.x, 1.0f) || !NearlyEqual(t1.y, 1.5f)) return 1;
+		if (!NearlyEqual(t2.x, 5.0f) || !NearlyEqual(t2.y, 5.0f)) return 1;
 
 		return 0;
 	}
@@ -107,6 +107,28 @@ namespace {
 
 		return 0;
 	}
+
+	int TestDay20CoreComponents() {
+		TinyEngine::ECS::Registry registry;
+		const TinyEngine::ECS::Entity entity = registry.CreateEntity();
+
+		auto& transform = registry.Emplace<TinyEngine::ECS::TransformComponent>(entity, 10.0f, 20.0f);
+		transform.rotationDegrees = 30.0f;
+		transform.scaleX = 2.0f;
+		transform.scaleY = 3.0f;
+
+		registry.Emplace<TinyEngine::ECS::SpriteRendererComponent>(entity);
+		if (!registry.Has<TinyEngine::ECS::SpriteRendererComponent>(entity)) return 1;
+
+		const auto& sprite = registry.Get<TinyEngine::ECS::SpriteRendererComponent>(entity);
+		if (!sprite.visible) return 1;
+		if (!NearlyEqual(sprite.colorA, 1.0f)) return 1;
+		if (!NearlyEqual(sprite.sizeX, 1.0f) || !NearlyEqual(sprite.sizeY, 1.0f)) return 1;
+		if (!NearlyEqual(transform.x, 10.0f) || !NearlyEqual(transform.y, 20.0f)) return 1;
+		if (!NearlyEqual(transform.scaleX, 2.0f) || !NearlyEqual(transform.scaleY, 3.0f)) return 1;
+
+		return 0;
+	}
 } // namespace
 
 int main() {
@@ -122,6 +144,11 @@ int main() {
 
 	if (TestSparseSetStyleStorageBehavior() != 0) {
 		std::cerr << "ECS sparse set behavior tests failed" << std::endl;
+		return 1;
+	}
+
+	if (TestDay20CoreComponents() != 0) {
+		std::cerr << "ECS day20 core component tests failed" << std::endl;
 		return 1;
 	}
 
