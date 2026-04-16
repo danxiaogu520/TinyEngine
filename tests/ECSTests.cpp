@@ -1,9 +1,12 @@
 #include <cmath>
 #include <iostream>
+#include <memory>
+#include <unordered_map>
 
 #include "TinyEngine/ECS/Components.h"
 #include "TinyEngine/ECS/Registry.h"
 #include "TinyEngine/ECS/System.h"
+#include "TinyEngine/Resource/ResourceManager.h"
 
 namespace {
 	constexpr float kEpsilon = 1e-6f;
@@ -11,6 +14,10 @@ namespace {
 	bool NearlyEqual(const float lhs, const float rhs) {
 		return std::fabs(lhs - rhs) <= kEpsilon;
 	}
+
+	struct DummyMaterial {
+		float tint = 1.0f;
+	};
 
 	class MovementSystem final : public TinyEngine::ECS::ISystem {
 	public:
@@ -174,6 +181,58 @@ namespace {
 
 		return 0;
 	}
+
+	int TestDay22ECSRendererResourceIntegration() {
+		TinyEngine::ECS::Registry registry;
+		TinyEngine::Resource::ResourceManager resourceManager;
+
+		auto playerMaterial = std::make_shared<DummyMaterial>();
+		playerMaterial->tint = 0.75f;
+		auto materialHandle = resourceManager.Register<DummyMaterial>("scene/player_material", playerMaterial);
+		if (!materialHandle.IsValid()) return 1;
+
+		const TinyEngine::ECS::Entity textured = registry.CreateEntity();
+		const TinyEngine::ECS::Entity untextured = registry.CreateEntity();
+
+		registry.Emplace<TinyEngine::ECS::TransformComponent>(textured, 12.0f, 34.0f);
+		auto& texturedSprite = registry.Emplace<TinyEngine::ECS::SpriteRendererComponent>(textured);
+		texturedSprite.sizeX = 2.0f;
+		texturedSprite.sizeY = 3.0f;
+
+		registry.Emplace<TinyEngine::ECS::TransformComponent>(untextured, 50.0f, 60.0f);
+		registry.Emplace<TinyEngine::ECS::SpriteRendererComponent>(untextured);
+
+		int submitCount = 0;
+		int materialAppliedCount = 0;
+		float positionSum = 0.0f;
+		std::unordered_map<TinyEngine::ECS::Entity, TinyEngine::Resource::ResourceHandle<DummyMaterial>> materialBindings;
+		materialBindings[textured] = materialHandle;
+
+		TinyEngine::ECS::SystemScheduler scheduler;
+		scheduler.AddSystem<TinyEngine::ECS::RenderSystem>(
+			[&](const TinyEngine::ECS::Entity entity, const TinyEngine::ECS::TransformComponent& transform,
+				const TinyEngine::ECS::SpriteRendererComponent& sprite) {
+				(void)entity;
+				submitCount += 1;
+				positionSum += transform.x + transform.y;
+
+				auto it = materialBindings.find(entity);
+				if (it != materialBindings.end()) {
+					auto resolved = resourceManager.Resolve(it->second);
+					if (resolved != nullptr && NearlyEqual(resolved->tint, 0.75f)) {
+						materialAppliedCount += 1;
+					}
+				}
+			});
+
+		scheduler.Update(registry, 0.016);
+
+		if (submitCount != 2) return 1;
+		if (materialAppliedCount != 1) return 1;
+		if (!NearlyEqual(positionSum, 156.0f)) return 1;
+
+		return 0;
+	}
 } // namespace
 
 int main() {
@@ -199,6 +258,11 @@ int main() {
 
 	if (TestDay21RenderSystemSubmission() != 0) {
 		std::cerr << "ECS day21 render system tests failed" << std::endl;
+		return 1;
+	}
+
+	if (TestDay22ECSRendererResourceIntegration() != 0) {
+		std::cerr << "ECS day22 integration tests failed" << std::endl;
 		return 1;
 	}
 
